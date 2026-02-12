@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Valentine UI</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #ffc2d1;
+  overflow: hidden;
+}
+
+/* Floating Hearts */
+.heart {
+  position: fixed;
+  font-size: 22px;
+  animation: floatUp linear forwards;
+  opacity: 0.8;
+  z-index: 1;
+}
+
+@keyframes floatUp {
+  from { transform: translateY(100vh); }
+  to { transform: translateY(-10vh); }
+}
+
+.popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  border-radius: 20px;
+  padding: 30px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  display: none;
+  z-index: 10;
+  width: 320px;
+}
+
+.popup.hearts-bg {
+  background-color: #ff8fab;
+  color: white;
+}
+
+button {
+  margin: 10px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.yes-btn { background: #ff4d6d; color: white; }
+.no-btn { background: #6c757d; color: white; }
+
+/* Expressive How Dare Text */
+.notification {
+  position: fixed;
+  top: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 40px;
+  font-weight: bold;
+  color: #ff1744;
+  text-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+  display: none;
+  z-index: 40;
+}
+
+/* Success Message */
+.success {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 30px;
+  font-weight: bold;
+  color: white;
+  text-align: center;
+  z-index: 40;
+  display: none;
+  text-shadow: 2px 2px 10px rgba(0,0,0,0.4);
+}
+
+/* Confetti */
+.confetti {
+  position: fixed;
+  width: 12px;
+  height: 12px;
+  top: -20px;
+  animation: fall linear forwards;
+  z-index: 50;
+}
+
+@keyframes fall {
+  to { transform: translateY(110vh) rotate(720deg); }
+}
+</style>
+</head>
+
+<body>
+
+<div class="popup hearts-bg" id="welcomePopup">
+<h2>Hello Husband ❤️</h2>
+<button onclick="openQuestion()">Click Here</button>
+</div>
+
+<div class="popup" id="questionPopup">
+<h2>Will you be my Valentine?</h2>
+<button class="yes-btn" onclick="yesClicked()">Yes</button>
+<button class="no-btn" onclick="noClicked()">No</button>
+</div>
+
+<div class="notification" id="notification">
+😱 HOW DARE YOU!!! 😤💔<br/><span style="font-size:22px;">No is not an option. Click on yes and see magic ✨</span>
+</div>
+
+<div class="success" id="successMsg">
+🎉 Congratulations!!! 💖<br/>
+You are lucky to be my Valentine 😘
+</div>
+
+<script>
+const welcomePopup = document.getElementById("welcomePopup");
+const questionPopup = document.getElementById("questionPopup");
+const notification = document.getElementById("notification");
+const successMsg = document.getElementById("successMsg");
+
+window.onload = () => {
+  welcomePopup.style.display = "block";
+  spawnInitialHearts();
+  startFloatingHearts();
+};
+
+function openQuestion() {
+  welcomePopup.style.display = "none";
+  questionPopup.style.display = "block";
+}
+
+function yesClicked() {
+  questionPopup.style.display = "none";
+  successMsg.style.display = "block";
+  confettiBlast();
+
+  setTimeout(() => stopConfetti(), 10000);
+}
+
+function noClicked() {
+  notification.style.display = "block";
+  
+  setTimeout(() => {
+    notification.style.display = "none";
+  }, 3000);
+}
+
+/* Immediate Hearts */
+function spawnInitialHearts() {
+  for (let i = 0; i < 35; i++) {
+    createHeart(true);
+  }
+}
+
+function startFloatingHearts() {
+  setInterval(() => createHeart(false), 300);
+}
+
+function createHeart(randomStart) {
+  const heart = document.createElement("div");
+  heart.classList.add("heart");
+  heart.innerHTML = "❤️";
+  heart.style.left = Math.random() * 100 + "vw";
+  heart.style.animationDuration = Math.random() * 4 + 4 + "s";
+
+  if (randomStart) {
+    heart.style.top = Math.random() * 100 + "vh";
+  }
+
+  document.body.appendChild(heart);
+  setTimeout(() => heart.remove(), 8000);
+}
+
+/* Confetti */
+let confettiInterval;
+
+function confettiBlast() {
+  confettiInterval = setInterval(() => {
+    for (let i = 0; i < 30; i++) {
+      const confetti = document.createElement("div");
+      confetti.classList.add("confetti");
+
+      confetti.style.left = Math.random() * 100 + "vw";
+      confetti.style.backgroundColor =
+        ["#ff4d6d", "#ffd166", "#06d6a0", "#118ab2", "#ef476f"][
+          Math.floor(Math.random() * 5)
+        ];
+
+      confetti.style.animationDuration = Math.random() * 3 + 2 + "s";
+
+      document.body.appendChild(confetti);
+      setTimeout(() => confetti.remove(), 5000);
+    }
+  }, 200);
+}
+
+function stopConfetti() {
+  clearInterval(confettiInterval);
+}
+</script>
+
+</body>
+</html>
